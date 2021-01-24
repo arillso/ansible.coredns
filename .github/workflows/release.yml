@@ -20,11 +20,11 @@ jobs:
         with:
           path: arillso.coredns
 
-      - name: Ansible Molecule Test
-        uses: gofrolist/molecule-action@v2.0.1
+      - name: Test Ansible with Molecule
+        uses: arillso/action.molecule@0.0.1
         with:
-          molecule_command: test
-          molecule_working_dir: arillso.coredns
+          command: test
+          working_directory: arillso.coredns
 
   publish:
     runs-on: ubuntu-latest
