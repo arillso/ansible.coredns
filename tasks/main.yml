@@ -1,46 +1,79 @@
 ---
 # tasks file for arillso.coredns
 
-- name: add OS specific variables
-  include_vars: '{{ loop_vars }}'
-  with_first_found:
-    - files:
-        - '{{ distribution }}-{{ distribution_version }}.yml'
-        - '{{ distribution }}-{{ distribution_major_version }}.yml'
-        - '{{ distribution }}.yml'
-        - '{{ ansible_os_family }}.yml'
-        - '{{ ansible_system }}.yml'
-        - 'defaults.yml'
-      paths:
-        - 'vars'
-  loop_control:
-    loop_var: loop_vars
-  vars:
-    distribution: '{{ ansible_distribution }}'
-    distribution_version: '{{ ansible_distribution_version }}'
-    distribution_major_version: '{{ ansible_distribution_major_version }}'
-  tags:
-    - configuration
-    - packages
+- name: Search current CoreDNS version
+  uri:
+    url: https://release-monitoring.org/api/project/141334
+    return_content: true
+  register: register_version
+  delegate_to: localhost
 
-- name: include distribution tasks
-  include_tasks: '{{ loop_distribution }}'
-  with_first_found:
-    - files:
-        - '{{ distribution }}-{{ distribution_version }}.yml'
-        - '{{ distribution }}-{{ distribution_major_version }}.yml'
-        - '{{ distribution }}.yml'
-        - '{{ ansible_os_family }}.yml'
-        - '{{ ansible_system }}.yml'
-        - 'defaults.yml'
-      paths:
-        - 'distribution'
-  loop_control:
-    loop_var: loop_distribution
-  vars:
-    distribution: '{{ ansible_distribution }}'
-    distribution_version: '{{ ansible_distribution_version }}'
-    distribution_major_version: '{{ ansible_distribution_major_version }}'
-  tags:
-    - configuration
-    - packages
+- name: Set current CoreDNS version
+  set_fact:
+    current_version: "{{ register_version.json['version'] }}"
+
+- name: Create the coredns group
+  become: true
+  group:
+    name: '{{ coredns_system_group }}'
+    state: present
+    system: true
+
+- name: Create the coredns user
+  become: true
+  user:
+    name: '{{ coredns_system_user }}'
+    groups:
+      - '{{ coredns_system_group }}'
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    comment: 'CoreDNS is a DNS server that chains plugins'
+    createhome: false
+    home: /var/lib/coredns
+
+- name: create coredns configuration directories
+  become: true
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - /etc/coredns
+    - /etc/coredns/zones
+
+- name: Unpack coredns binary
+  become: true
+  unarchive:
+    src: '{{ coredns_url }}'
+    dest: '/usr/local/bin/'
+    remote_src: true
+    mode: 0750
+    owner: '{{ coredns_system_user }}'
+    group: '{{ coredns_system_group }}'
+  notify: restart CoreDNS
+
+- name: Copy the coredns systemd service file
+  become: true
+  template:
+    src: '{{ item }}.j2'
+    dest: '/{{ item }}'
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart CoreDNS
+  with_items:
+    - etc/systemd/system/coredns.service
+    - usr/lib/tmpfiles.d/coredns.conf
+
+- name: Copy configuration file
+  become: true
+  template:
+    src: 'etc/coredns/Corefile.j2'
+    dest: /etc/coredns/corefile
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart CoreDNS

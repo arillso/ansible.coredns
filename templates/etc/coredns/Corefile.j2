@@ -1,0 +1,28 @@
+
+{% for snippets in coredns_snippet %}
+{% for snippet_key,snippet_value in snippets.items() %}
+({{ snippet_key }}) {
+{% for option,config in snippet_value.items() %}
+{% if config is iterable and (config is not string and config is not mapping) %}
+{% for config_value in config %}
+    {{ option }} {{ config_value }} 
+{% endfor %}
+{% elif config %}
+    {{ option }} {{ config }}
+{% else %}
+    {{ option }}
+{% endif %}
+{% endfor %}
+}
+{% endfor %}
+{% endfor %}
+
+{% for server in coredns_server %}
+{{ server.zone }} {
+{% for key,value in server.items() %}
+{% if key != "zone" %}
+    {{ key }} {{ value }} 
+{% endif %}
+{% endfor %}
+}
+{% endfor %}

@@ -1,2 +1,10 @@
 ---
 # handlers file for arillso.coredns
+
+- name: restart CoreDNS
+  become: true
+  systemd:
+    name: coredns
+    state: restarted
+    enabled: true
+    daemon_reload: true

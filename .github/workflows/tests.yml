@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: projectgroup.projectname
+        working-directory: arillso.coredns
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -31,11 +31,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          path: projectgroup.projectname
+          path: arillso.coredns
 
-      - name: Ansible Molecule Test
-        uses: gofrolist/molecule-action@v2.0.1
+      - name: Test Ansible with Molecule
+        uses: arillso/action.molecule@0.0.1
         with:
-          molecule_command: test
-          molecule_args: --scenario-name ${{ matrix.scenario }}
-          molecule_working_dir: projectgroup.projectname
+          command: test
+          working_directory: arillso.coredns
+          scenario: ${{ matrix.scenario }}

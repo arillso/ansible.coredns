@@ -1,2 +1,42 @@
 ---
 # defaults file for arillso.coredns
+
+coredns_version: '{{ current_version }}'
+coredns_url: 'https://github.com/coredns/coredns/releases/download/v{{ coredns_version }}/coredns_{{ coredns_version }}_linux_{{ coredns_arch }}.tgz'
+
+coredns_system_group: 'coredns'
+coredns_system_user: '{{ coredns_system_group }}'
+
+coredns_arch: '{{ coredns_arch_map[ansible_architecture] | default(ansible_architecture) }}'
+
+coredns_arch_map:
+  i386: '386'
+  x86_64: 'amd64'
+  aarch64: 'arm64'
+  armv7l: 'armv7'
+  armv6l: 'armv6'
+
+coredns_dns_port: 53
+
+coredns_snippet:
+#  - bind:
+#      bind:
+#        - 127.0.0.1
+#        - 127.0.0.53
+#        - 192.168.100.1
+#      cache: |
+#        {
+#          success 10000 1800
+#          denial  1000  300
+#        }
+#      errors:
+
+coredns_server:
+#  - zone: "itigo.tech:53
+#      hosts:
+#      import: bind
+#      health: :8080
+#      rewrite: name regex (.*).vpn.itigo.tech gateway.cluster-01.itigo.tech
+#  - .:53:
+#      import: bind
+#      forward: . tls://2606:4700:4700::1111 tls://1.1.1.1
