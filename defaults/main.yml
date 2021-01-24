@@ -32,11 +32,11 @@ coredns_snippet:
 #      errors:
 
 coredns_server:
-#  - zone: "itigo.tech:53
+#  - zone: "example.tech:53
 #      hosts:
 #      import: bind
 #      health: :8080
-#      rewrite: name regex (.*).vpn.itigo.tech gateway.cluster-01.itigo.tech
+#      rewrite: name regex (.*).vpn.example.tech gateway.example.tech
 #  - .:53:
 #      import: bind
 #      forward: . tls://2606:4700:4700::1111 tls://1.1.1.1
