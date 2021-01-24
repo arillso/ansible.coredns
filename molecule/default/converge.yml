@@ -4,6 +4,6 @@
   vars:
     ansible_python_interpreter: auto_silent
   tasks:
-    - name: 'Include projectgroup.projectname'
+    - name: 'Include arillso.coredns'
       include_role:
-        name: 'projectgroup.projectname'
+        name: 'arillso.coredns'
