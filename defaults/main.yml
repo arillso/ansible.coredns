@@ -19,16 +19,17 @@ coredns_arch_map:
 coredns_dns_port: 53
 
 coredns_snippet:
-  - bind:
-      bind:
-        - 127.0.0.1
-        - 127.0.0.53
-      cache: |
-        {
-          success 10000 1800
-          denial  1000  300
-        }
-      errors:
+#  - bind:
+#      bind:
+#        - 127.0.0.1
+#        - 127.0.0.53
+#        - 192.168.100.1
+#      cache: |
+#        {
+#          success 10000 1800
+#          denial  1000  300
+#        }
+#      errors:
 
 coredns_server:
 #  - zone: "example.tech:53
