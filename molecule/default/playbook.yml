@@ -4,18 +4,18 @@
   vars:
     coredns_snippet:
       - bind:
-        bind:
-          - 127.0.0.1
-          - 127.0.0.53
-        cache: |
-          {
-            success 10000 1800
-            denial  1000  300
-          }
-        errors:
+          bind:
+            - 127.0.0.1
+            - 127.0.0.53
+          cache: |
+            {
+              success 10000 1800
+              denial  1000  300
+            }
+          errors:
 
     coredns_server:
-      - zone: "example.tech:53"
+      - zone: 'example.tech:53'
         hosts:
           import: bind
         health: :8080
