@@ -77,3 +77,5 @@
     group: root
     mode: 0644
   notify: restart CoreDNS
+  tags:
+    - notest
