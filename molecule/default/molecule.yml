@@ -8,16 +8,6 @@ lint: |
   ansible-lint ../arillso.coredns
   flake8
 platforms:
-  - name: alpine-3.11
-    image: arillso/alpine:3.11
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: alpine-3.12
-    image: arillso/alpine:3.12
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
   - name: centos-7
     image: arillso/centos:7
     privileged: true
