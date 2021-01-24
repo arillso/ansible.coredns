@@ -6,7 +6,7 @@ driver:
 lint: |
   set -e
   yamllint .
-  ansible-lint ../projectgroup.projectname
+  ansible-lint ../arillso.coredns
   flake8
 platforms:
   - name: debian-sid
